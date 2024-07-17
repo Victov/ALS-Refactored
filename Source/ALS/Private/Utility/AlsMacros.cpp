@@ -3,7 +3,7 @@
 #include "CoreGlobals.h"
 #include "Templates/Function.h"
 
-#if DO_ENSURE && !USING_CODE_ANALYSIS
+#if DO_ENSURE && !USING_CODE_ANALYSIS && USE_CUSTOM_ALS_ENSURE
 
 bool UE_DEBUG_SECTION AlsEnsure::Execute(bool& bExecuted, const bool bEnsureAlways, const ANSICHAR* Expression,
                                          const TCHAR* StaticMessage, const TCHAR* Format, ...)
