@@ -4,6 +4,10 @@
 
 #define USE_CUSTOM_ALS_ENSURE 0
 
+#define ALS_STRINGIFY_IMPLEMENTATION(Value) #Value
+
+#define ALS_STRINGIFY(Value) ALS_STRINGIFY_IMPLEMENTATION(Value)
+
 #define ALS_GET_TYPE_STRING(Type) \
 	((void) sizeof UEAsserts_Private::GetMemberNameCheckedJunk(static_cast<Type*>(nullptr)), TEXTVIEW(#Type))
 
@@ -11,45 +15,24 @@
 // crash report, because it doesn't happen instantly and causes the editor to freeze, which can be annoying.
 
 
+
 #if DO_ENSURE && !USING_CODE_ANALYSIS && USE_CUSTOM_ALS_ENSURE
 
 namespace AlsEnsure
 {
-	struct FAlsEnsureInfo
-	{
-	public:
-		const ANSICHAR* Expression{nullptr};
-
-		const ANSICHAR* FilePath{nullptr};
-
-		int32 LineNumber{0};
-
-		uint8 bEnsureAlways : 1 {false};
-
-	public:
-		constexpr FAlsEnsureInfo(
-			const ANSICHAR* InExpression,
-			const ANSICHAR* InFilePath,
-			const int32 InLineNumber,
-			const bool bInEnsureAlways) : Expression(InExpression)
-			                              , FilePath(InFilePath)
-			                              , LineNumber(InLineNumber)
-			                              , bEnsureAlways(bInEnsureAlways) {}
-	};
-
-	ALS_API bool UE_COLD UE_DEBUG_SECTION VARARGS
-	Execute(std::atomic<bool>& bExecuted, const FAlsEnsureInfo& EnsureInfo, const TCHAR* Format, ...);
+	ALS_API bool UE_DEBUG_SECTION VARARGS Execute(std::atomic<bool>& bExecuted, bool bEnsureAlways, const ANSICHAR* Expression,
+	                                              const TCHAR* StaticMessage, const TCHAR* Format, ...);
 }
 
 #define ALS_ENSURE_IMPLEMENTATION(Capture, bEnsureAlways, Expression, Format, ...) \
-	(LIKELY(Expression) || [Capture]() UE_COLD UE_DEBUG_SECTION \
+	(LIKELY(Expression) || [Capture]() UE_DEBUG_SECTION \
 	{ \
-		static constexpr AlsEnsure::FAlsEnsureInfo EnsureInfo{#Expression, __builtin_FILE(), __builtin_LINE(), bEnsureAlways}; \
+		static constexpr auto StaticMessage{TEXT("Ensure failed: " #Expression ", File: " __FILE__ ", Line: " ALS_STRINGIFY(__LINE__) ".")}; \
 		static std::atomic<bool> bExecuted{false}; \
 		\
 		UE_VALIDATE_FORMAT_STRING(Format, ##__VA_ARGS__); \
 		\
-		if (AlsEnsure::Execute(bExecuted, EnsureInfo, Format, ##__VA_ARGS__)) \
+		if (AlsEnsure::Execute(bExecuted, bEnsureAlways, #Expression, StaticMessage, Format, ##__VA_ARGS__)) \
 		{ \
 			PLATFORM_BREAK(); \
 		} \

@@ -2,16 +2,13 @@
 
 #include "Misc/AssertionMacros.h"
 
-#define USE_CUSTOM_ALS_ENSURE 0
-
 #define ALS_GET_TYPE_STRING(Type) \
 	((void) sizeof UEAsserts_Private::GetMemberNameCheckedJunk(static_cast<Type*>(nullptr)), TEXTVIEW(#Type))
 
 // A lightweight version of the ensure() macro that doesn't generate a C++ call stack and doesn't send a
 // crash report, because it doesn't happen instantly and causes the editor to freeze, which can be annoying.
 
-
-#if DO_ENSURE && !USING_CODE_ANALYSIS && USE_CUSTOM_ALS_ENSURE
+#if DO_ENSURE && !USING_CODE_ANALYSIS
 
 namespace AlsEnsure
 {
@@ -61,13 +58,6 @@ namespace AlsEnsure
 #define ALS_ENSURE_MESSAGE(Expression, Format, ...) ALS_ENSURE_IMPLEMENTATION(&, false, Expression, Format, ##__VA_ARGS__)
 #define ALS_ENSURE_ALWAYS(Expression) ALS_ENSURE_IMPLEMENTATION( , true, Expression, TEXT(""))
 #define ALS_ENSURE_ALWAYS_MESSAGE(Expression, Format, ...) ALS_ENSURE_IMPLEMENTATION(&, true, Expression, Format, ##__VA_ARGS__)
-
-#elif DO_ENSURE && !USING_CODE_ANALYSIS && !USE_CUSTOM_ALS_ENSURE
-
-#define ALS_ENSURE(Expression) ensure(Expression)
-#define ALS_ENSURE_MESSAGE(Expression, Format, ...) ensureMsgf(Expression, Format, ##__VA_ARGS__)
-#define ALS_ENSURE_ALWAYS(Expression) ensureAlways(Expression)
-#define ALS_ENSURE_ALWAYS_MESSAGE(Expression, Format, ...) ensureAlwaysMsgf(Expression, Format, ##__VA_ARGS__)
 
 #else
 
