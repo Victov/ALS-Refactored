@@ -460,7 +460,7 @@ void AAlsCharacter::StartMantlingImplementation(const FAlsMantlingParameters& Pa
 
 	const auto* MantlingSettings{SelectMantlingSettings(Parameters.MantlingType)};
 
-	if (!ALS_ENSURE(IsValid(MantlingSettings)) || !ALS_ENSURE(IsValid(MantlingSettings->Montage)))
+	if (!IsValid(MantlingSettings) || !IsValid(MantlingSettings->Montage))
 	{
 		return;
 	}
