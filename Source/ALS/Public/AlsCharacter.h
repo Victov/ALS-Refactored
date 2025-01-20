@@ -557,7 +557,7 @@ protected:
 	void OnRagdollingStarted();
 
 public:
-	bool IsRagdollingAllowedToStop() const;
+	virtual bool IsRagdollingAllowedToStop() const;
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character", Meta = (ReturnDisplayName = "Success"))
 	bool StopRagdolling();
