@@ -8,13 +8,6 @@
 #include "AlsCharacter.h"
 #include "AlsCharacterMovementComponent.h"
 
-namespace AlsLocomotionActionTags
-{
-	// Since AAlsCharacter::Jump checks whether we are not doing any locomotion action, simply adding one for the purpose
-	// of blocking jumps will suffice.
-	UE_DEFINE_GAMEPLAY_TAG_STATIC(BlockJump, FName{ TEXTVIEW("Als.LocomotionAction.BlockJump") });
-}
-
 UAlsAnimNotifyState_BlockInput::UAlsAnimNotifyState_BlockInput()
 {
 #if WITH_EDITOR
@@ -37,7 +30,6 @@ void UAlsAnimNotifyState_BlockInput::NotifyBegin(USkeletalMeshComponent* Mesh, U
 		UAlsCharacterMovementComponent* ALSCharacterMovementComponent = Cast<UAlsCharacterMovementComponent>(Character->GetMovementComponent());
 		if (IsValid(ALSCharacterMovementComponent))
 		{
-			Character->SetLocomotionAction(AlsLocomotionActionTags::BlockJump);
 			ALSCharacterMovementComponent->SetInputBlocked(true);
 		}
 	}
@@ -53,7 +45,6 @@ void UAlsAnimNotifyState_BlockInput::NotifyEnd(USkeletalMeshComponent* Mesh, UAn
 		UAlsCharacterMovementComponent* ALSCharacterMovementComponent = Cast<UAlsCharacterMovementComponent>(Character->GetMovementComponent());
 		if (IsValid(ALSCharacterMovementComponent))
 		{
-			Character->SetLocomotionAction(FGameplayTag::EmptyTag);
 			ALSCharacterMovementComponent->SetInputBlocked(false);
 		}
 	}

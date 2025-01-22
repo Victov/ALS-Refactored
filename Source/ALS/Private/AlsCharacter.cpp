@@ -1466,8 +1466,13 @@ void AAlsCharacter::MulticastSetInitialVelocityYawAngle_Implementation(const flo
 
 void AAlsCharacter::Jump()
 {
-	if (Stance == AlsStanceTags::Standing && !LocomotionAction.IsValid() &&
-	    LocomotionMode == AlsLocomotionModeTags::Grounded)
+	UAlsCharacterMovementComponent* ALSMovementComponent = Cast<UAlsCharacterMovementComponent>(GetMovementComponent());
+
+	if (Stance == AlsStanceTags::Standing &&
+		!LocomotionAction.IsValid() &&
+	    LocomotionMode == AlsLocomotionModeTags::Grounded &&
+		IsValid(AlsCharacterMovement) && !AlsCharacterMovement->IsInputBlocked()
+		)
 	{
 		Super::Jump();
 	}

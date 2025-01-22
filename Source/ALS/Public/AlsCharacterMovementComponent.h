@@ -225,6 +225,7 @@ public:
 	void SetMovementModeLocked(bool bNewMovementModeLocked);
 
 	void SetInputBlocked(bool bNewInputBlocked);
+	bool IsInputBlocked() const { return bInputBlocked; }
 
 	bool TryConsumePrePenetrationAdjustmentVelocity(FVector& OutVelocity);
 };
