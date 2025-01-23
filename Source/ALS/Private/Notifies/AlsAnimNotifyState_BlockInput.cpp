@@ -8,6 +8,8 @@
 #include "AlsCharacter.h"
 #include "AlsCharacterMovementComponent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(AlsAnimNotifyState_BlockInput)
+
 UAlsAnimNotifyState_BlockInput::UAlsAnimNotifyState_BlockInput()
 {
 #if WITH_EDITOR
