@@ -1029,6 +1029,11 @@ void AAlsCharacter::StopRagdollingImplementation()
 		return;
 	}
 
+	if (!GetWorld() || GetWorld()->bIsTearingDown)
+	{
+		return;
+	}
+
 	auto& FinalRagdollPose{AnimationInstance->SnapshotFinalRagdollPose()};
 
 	const auto PelvisTransform{GetMesh()->GetSocketTransform(UAlsConstants::PelvisBoneName())};
