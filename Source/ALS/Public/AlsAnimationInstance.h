@@ -7,11 +7,11 @@
 #include "State/AlsDynamicTransitionsState.h"
 #include "State/AlsFeetState.h"
 #include "State/AlsGroundedState.h"
+#include "State/AlsHeadState.h"
 #include "State/AlsInAirState.h"
 #include "State/AlsLayeringState.h"
 #include "State/AlsLeanState.h"
 #include "State/AlsLocomotionAnimationState.h"
-#include "State/AlsLookState.h"
 #include "State/AlsMovementBaseState.h"
 #include "State/AlsPoseState.h"
 #include "State/AlsRagdollingAnimationState.h"
@@ -25,6 +25,7 @@
 #include "AlsAnimationInstance.generated.h"
 
 class UAlsLinkedAnimationInstance;
+class UAlsAnimationInstanceSettings;
 class AAlsCharacter;
 
 UCLASS()
@@ -97,7 +98,7 @@ protected:
 	FAlsSpineState SpineState;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-	FAlsLookState LookState;
+	FAlsHeadState HeadState;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
 	FAlsLocomotionAnimationState LocomotionState;
@@ -177,18 +178,22 @@ private:
 
 	void RefreshView(float DeltaTime);
 
+	// Spine
+
 public:
 	virtual bool IsSpineRotationAllowed();
 
 private:
 	void RefreshSpine(float SpineBlendAmount, float DeltaTime);
 
+	// Head
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = "ALS|Animation Instance", Meta = (BlueprintThreadSafe))
-	void InitializeLook();
+	void InitializeHead();
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Animation Instance", Meta = (BlueprintThreadSafe))
-	void RefreshLook();
+	void RefreshHead();
 
 	// Locomotion
 
@@ -202,7 +207,7 @@ protected:
 	// Grounded
 
 public:
-	void SetGroundedEntryMode(const FGameplayTag& NewGroundedEntryMode);
+	void SetGroundedEntryMode(FGameplayTag NewGroundedEntryMode);
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = "ALS|Animation Instance", Meta = (BlueprintThreadSafe))
@@ -275,15 +280,11 @@ private:
 
 	void RefreshFeet(float DeltaTime);
 
-	void RefreshFoot(FAlsFootState& FootState, const FName& IkCurveName, const FName& LockCurveName,
-	                 const FTransform& ComponentTransformInverse, float DeltaTime) const;
+	void ProcessFootLockTeleport(const FAlsFootUpdateContext& Context) const;
 
-	void ProcessFootLockTeleport(float IkAmount, FAlsFootState& FootState) const;
+	void ProcessFootLockBaseChange(const FAlsFootUpdateContext& Context) const;
 
-	void ProcessFootLockBaseChange(float IkAmount, FAlsFootState& FootState, const FTransform& ComponentTransformInverse) const;
-
-	void RefreshFootLock(float IkAmount, FAlsFootState& FootState, const FName& LockCurveName,
-	                     const FTransform& ComponentTransformInverse, float DeltaTime) const;
+	void RefreshFootLock(const FAlsFootUpdateContext& Context) const;
 
 	// Transitions
 
@@ -304,7 +305,7 @@ public:
 	                                  float StartTime = 0.0f, bool bFromStandingIdleOnly = false);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Animation Instance", Meta = (BlueprintThreadSafe))
-	void StopTransitionAndTurnInPlaceAnimations(float BlendOutDuration = 0.2f);
+	void StopTransitionAndTurnInPlaceAnimations(float BlendOutDuration = -1.0f);
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = "ALS|Animation Instance", Meta = (BlueprintThreadSafe))
@@ -352,7 +353,7 @@ public:
 	// Utility
 
 public:
-	float GetCurveValueClamped01(const FName& CurveName) const;
+	float GetCurveValueClamped01(FName CurveName) const;
 };
 
 inline UAlsAnimationInstanceSettings* UAlsAnimationInstance::GetSettingsUnsafe() const
@@ -370,7 +371,7 @@ inline void UAlsAnimationInstance::MarkTeleported()
 	TeleportedTime = GetWorld()->GetTimeSeconds();
 }
 
-inline void UAlsAnimationInstance::SetGroundedEntryMode(const FGameplayTag& NewGroundedEntryMode)
+inline void UAlsAnimationInstance::SetGroundedEntryMode(const FGameplayTag NewGroundedEntryMode)
 {
 	GroundedEntryMode = NewGroundedEntryMode;
 }

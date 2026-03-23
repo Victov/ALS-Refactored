@@ -11,9 +11,9 @@
 
 #define LOCTEXT_NAMESPACE "AlsSkeletonUtility"
 
-namespace AlsSkeletonUtility
+namespace
 {
-	void LogMissingBoneWarning(const USkeleton* Skeleton, const FName& BoneName, const FString& FunctionName)
+	void LogMissingBoneWarning(const USkeleton* Skeleton, const FName BoneName, const FString& FunctionName)
 	{
 		FMessageLog MessageLog{AlsLog::MessageLogName};
 
@@ -102,8 +102,8 @@ void UAlsSkeletonUtility::AddOrReplaceSlot(USkeleton* Skeleton, FName SlotName, 
 	}
 }
 
-void UAlsSkeletonUtility::AddOrReplaceVirtualBone(USkeleton* Skeleton, const FName& SourceBoneName,
-                                                  const FName& TargetBoneName, FName VirtualBoneName)
+void UAlsSkeletonUtility::AddOrReplaceVirtualBone(USkeleton* Skeleton, const FName SourceBoneName,
+                                                  const FName TargetBoneName, FName VirtualBoneName)
 {
 	if (!ALS_ENSURE(IsValid(Skeleton)))
 	{
@@ -158,13 +158,13 @@ void UAlsSkeletonUtility::AddOrReplaceVirtualBone(USkeleton* Skeleton, const FNa
 
 	if (Skeleton->GetReferenceSkeleton().FindBoneIndex(SourceBoneName) < 0)
 	{
-		AlsSkeletonUtility::LogMissingBoneWarning(Skeleton, SourceBoneName, __FUNCTION__);
+		LogMissingBoneWarning(Skeleton, SourceBoneName, __FUNCTION__);
 		return;
 	}
 
 	if (Skeleton->GetReferenceSkeleton().FindBoneIndex(TargetBoneName) < 0)
 	{
-		AlsSkeletonUtility::LogMissingBoneWarning(Skeleton, TargetBoneName, __FUNCTION__);
+		LogMissingBoneWarning(Skeleton, TargetBoneName, __FUNCTION__);
 		return;
 	}
 
@@ -181,7 +181,7 @@ void UAlsSkeletonUtility::AddOrReplaceVirtualBone(USkeleton* Skeleton, const FNa
 	Skeleton->RenameVirtualBone(TempVirtualBoneName, VirtualBoneName);
 }
 
-void UAlsSkeletonUtility::AddOrReplaceSocket(USkeleton* Skeleton, FName SocketName, const FName& BoneName,
+void UAlsSkeletonUtility::AddOrReplaceSocket(USkeleton* Skeleton, FName SocketName, const FName BoneName,
                                              const FVector& RelativeLocation, const FRotator& RelativeRotation)
 {
 	if (!ALS_ENSURE(IsValid(Skeleton)))
@@ -206,7 +206,7 @@ void UAlsSkeletonUtility::AddOrReplaceSocket(USkeleton* Skeleton, FName SocketNa
 
 	if (Skeleton->GetReferenceSkeleton().FindBoneIndex(BoneName) < 0)
 	{
-		AlsSkeletonUtility::LogMissingBoneWarning(Skeleton, BoneName, __FUNCTION__);
+		LogMissingBoneWarning(Skeleton, BoneName, __FUNCTION__);
 		return;
 	}
 
@@ -285,7 +285,7 @@ void UAlsSkeletonUtility::AddOrReplaceWeightBlendProfile(USkeleton* Skeleton, FN
 		const auto BoneIndex{Skeleton->GetReferenceSkeleton().FindBoneIndex(Entry.BoneName)};
 		if (BoneIndex < 0)
 		{
-			AlsSkeletonUtility::LogMissingBoneWarning(Skeleton, Entry.BoneName, __FUNCTION__);
+			LogMissingBoneWarning(Skeleton, Entry.BoneName, __FUNCTION__);
 			continue;
 		}
 
@@ -293,7 +293,7 @@ void UAlsSkeletonUtility::AddOrReplaceWeightBlendProfile(USkeleton* Skeleton, FN
 	}
 }
 
-void UAlsSkeletonUtility::SetBoneRetargetingMode(USkeleton* Skeleton, const FName& BoneName,
+void UAlsSkeletonUtility::SetBoneRetargetingMode(USkeleton* Skeleton, const FName BoneName,
                                                  const EBoneTranslationRetargetingMode::Type RetargetingMode,
                                                  const bool bIncludeDescendants)
 {
@@ -305,7 +305,7 @@ void UAlsSkeletonUtility::SetBoneRetargetingMode(USkeleton* Skeleton, const FNam
 	const auto BoneIndex{Skeleton->GetReferenceSkeleton().FindBoneIndex(BoneName)};
 	if (BoneIndex < 0)
 	{
-		AlsSkeletonUtility::LogMissingBoneWarning(Skeleton, BoneName, __FUNCTION__);
+		LogMissingBoneWarning(Skeleton, BoneName, __FUNCTION__);
 		return;
 	}
 

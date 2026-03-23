@@ -3,6 +3,8 @@
 #include "Animation/AnimInstance.h"
 #include "AlsLinkedAnimationInstance.generated.h"
 
+enum class EAlsHipsDirection : uint8;
+class UAlsAnimationInstance;
 class AAlsCharacter;
 
 UCLASS()
@@ -37,16 +39,11 @@ protected:
 		Meta = (BlueprintThreadSafe, ReturnDisplayName = "Parent"))
 	UAlsAnimationInstance* GetParent() const;
 
-	UE_DEPRECATED(4.14, "Please use GetParent() instead")
-	UFUNCTION(BlueprintPure, Category = "ALS|Linked Animation Instance",
-		Meta = (DeprecatedFunction, DeprecationMessage = "Please use GetParent() instead."))
-	UAlsAnimationInstance* GetParentUnsafe() const;
+	UFUNCTION(BlueprintCallable, Category = "ALS|Linked Animation Instance", Meta = (BlueprintThreadSafe))
+	void InitializeHead();
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Linked Animation Instance", Meta = (BlueprintThreadSafe))
-	void InitializeLook();
-
-	UFUNCTION(BlueprintCallable, Category = "ALS|Linked Animation Instance", Meta = (BlueprintThreadSafe))
-	void RefreshLook();
+	void RefreshHead();
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Linked Animation Instance", Meta = (BlueprintThreadSafe))
 	void InitializeLean();
@@ -93,11 +90,6 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "ALS|Linked Animation Instance", Meta = (BlueprintThreadSafe))
 	void RefreshTurnInPlace();
 };
-
-inline UAlsAnimationInstance* UAlsLinkedAnimationInstance::GetParentUnsafe() const
-{
-	return Parent.Get();
-}
 
 inline UAlsAnimationInstance* UAlsLinkedAnimationInstance::GetParent() const
 {

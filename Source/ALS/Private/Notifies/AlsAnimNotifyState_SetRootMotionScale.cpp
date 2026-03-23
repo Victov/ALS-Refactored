@@ -19,6 +19,11 @@ FString UAlsAnimNotifyState_SetRootMotionScale::GetNotifyName_Implementation() c
 
 	NotifyNameBuilder.Appendf(TEXT("%.2f"), TranslationScale);
 
+	// For some reason editor cuts off some characters at the end of the string, so to avoid this we insert a bunch of spaces.
+	// TODO Check the need for this hack in future engine versions.
+
+	NotifyNameBuilder << TEXTVIEW("        ");
+
 	return FString{NotifyNameBuilder};
 }
 
@@ -50,8 +55,8 @@ void UAlsAnimNotifyState_SetRootMotionScale::NotifyEnd(USkeletalMeshComponent* M
 		}
 		else
 		{
-			UE_LOG(LogAls, Warning, TEXT("%hs: The current translation scale does not match the translation scale from the ")
-			       TEXT("animation notify! Probably something changed it before the animation notify ended."), __FUNCTION__);
+			UE_LOG(LogAls, Warning, TEXT("%hs: The current translation scale does not match the translation scale from the")
+			       TEXT(" animation notify! Probably something changed it before the animation notify ended."), __FUNCTION__)
 		}
 	}
 }

@@ -63,6 +63,12 @@ struct ALS_API FAlsFeetState
 	float FeetCrossingAmount{0.0f};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS")
+	uint8 bValid : 1 {false};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS")
+	uint8 bBecameValid : 1 {false};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS")
 	FAlsFootState Left{
 		.ThighAxis = -FVector3f::ZAxisVector
 	};
@@ -71,4 +77,19 @@ struct ALS_API FAlsFeetState
 	FAlsFootState Right{
 		.ThighAxis = FVector3f::ZAxisVector
 	};
+};
+
+struct ALS_API FAlsFootUpdateContext
+{
+	FTransform ComponentTransform;
+
+	FTransform ComponentTransformInverse;
+
+	FAlsFootState* FootState{nullptr};
+
+	float IkAmount{0.0f};
+
+	float LockAmount{0.0f};
+
+	float DeltaTime{0.0f};
 };
